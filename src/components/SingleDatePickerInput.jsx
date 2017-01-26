@@ -21,12 +21,14 @@ const propTypes = forbidExtraProps({
   showCaret: PropTypes.bool,
   showClearDate: PropTypes.bool,
   customCloseIcon: PropTypes.node,
+  isFocused: PropTypes.bool,
 
   onChange: PropTypes.func,
   onClearDate: PropTypes.func,
   onFocus: PropTypes.func,
   onKeyDownShiftTab: PropTypes.func,
   onKeyDownTab: PropTypes.func,
+  onKeyDownArrowDown: PropTypes.func,
 
   // i18n
   phrases: PropTypes.shape(getPhrasePropTypes(SingleDatePickerInputPhrases)),
@@ -44,12 +46,14 @@ const defaultProps = {
   showCaret: false,
   showClearDate: false,
   customCloseIcon: null,
+  isFocused: false,
 
   onChange() {},
   onClearDate() {},
   onFocus() {},
   onKeyDownShiftTab() {},
   onKeyDownTab() {},
+  onKeyDownArrowDown() {},
 
   // i18n
   phrases: SingleDatePickerInputPhrases,
@@ -90,6 +94,7 @@ export default class SingleDatePickerInput extends React.Component {
       disabled,
       required,
       showCaret,
+      isFocused,
       showClearDate,
       phrases,
       onClearDate,
@@ -97,11 +102,13 @@ export default class SingleDatePickerInput extends React.Component {
       onFocus,
       onKeyDownShiftTab,
       onKeyDownTab,
+      onKeyDownArrowDown,
       screenReaderMessage,
       customCloseIcon,
     } = this.props;
 
     const closeIcon = customCloseIcon || (<CloseButton />);
+    const screenReaderText = screenReaderMessage || phrases.keyboardNavigationInstructions;
 
     return (
       <div className="SingleDatePickerInput">
@@ -110,17 +117,19 @@ export default class SingleDatePickerInput extends React.Component {
           placeholder={placeholder} // also used as label
           displayValue={displayValue}
           inputValue={inputValue}
-          screenReaderMessage={screenReaderMessage}
+          screenReaderMessage={screenReaderText}
           focused={focused}
           isFocused={isFocused}
           disabled={disabled}
           required={required}
           showCaret={showCaret}
+          isFocused={isFocused}
 
           onChange={onChange}
           onFocus={onFocus}
           onKeyDownShiftTab={onKeyDownShiftTab}
           onKeyDownTab={onKeyDownTab}
+          onKeyDownArrowDown={onKeyDownArrowDown}
         />
 
         {showClearDate && (

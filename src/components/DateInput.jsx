@@ -20,6 +20,10 @@ const propTypes = forbidExtraProps({
   onKeyDownShiftTab: PropTypes.func,
   onKeyDownTab: PropTypes.func,
 
+  onKeyDownArrowDown: PropTypes.func,
+  onKeyDownQuestionMark: PropTypes.func,
+
+  // accessibility
   isFocused: PropTypes.bool, // describes actual DOM focus
 });
 
@@ -38,6 +42,10 @@ const defaultProps = {
   onKeyDownShiftTab() {},
   onKeyDownTab() {},
 
+  onKeyDownArrowDown() {},
+  onKeyDownQuestionMark() {},
+
+  // accessibility
   isFocused: false,
 };
 
@@ -85,13 +93,24 @@ export default class DateInput extends React.Component {
   }
 
   onKeyDown(e) {
-    const { onKeyDownShiftTab, onKeyDownTab } = this.props;
-    if (e.key === 'Tab') {
+    const {
+      onKeyDownShiftTab,
+      onKeyDownTab,
+      onKeyDownArrowDown,
+      onKeyDownQuestionMark,
+    } = this.props;
+
+    const { key } = e;
+    if (key === 'Tab') {
       if (e.shiftKey) {
         onKeyDownShiftTab(e);
       } else {
         onKeyDownTab(e);
       }
+    } else if (key === 'ArrowDown') {
+      onKeyDownArrowDown(e);
+    } else if (key === '?') {
+      onKeyDownQuestionMark(e);
     }
   }
 
@@ -140,14 +159,12 @@ export default class DateInput extends React.Component {
           disabled={disabled}
           readOnly={isTouch}
           required={required}
-          aria-describedby={screenReaderMessage && screenReaderMessageId}
+          aria-describedby={screenReaderMessageId}
         />
 
-        {screenReaderMessage &&
-          <p id={screenReaderMessageId} className="screen-reader-only">
-            {screenReaderMessage}
-          </p>
-        }
+        <p id={screenReaderMessageId} className="screen-reader-only">
+          {screenReaderMessage}
+        </p>
 
         <div
           className={cx('DateInput__display-text', {

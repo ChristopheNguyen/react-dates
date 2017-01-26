@@ -7,9 +7,13 @@ import { forbidExtraProps, nonNegativeInteger } from 'airbnb-prop-types';
 import moment from 'moment';
 import cx from 'classnames';
 
+import { CalendarDayPhrases } from '../defaultPhrases';
+import getPhrasePropTypes from '../utils/getPhrasePropTypes';
+
 import CalendarDay from './CalendarDay';
 
 import getCalendarMonthWeeks from '../utils/getCalendarMonthWeeks';
+import isSameDay from '../utils/isSameDay';
 
 import ScrollableOrientationShape from '../shapes/ScrollableOrientationShape';
 
@@ -32,8 +36,11 @@ const propTypes = forbidExtraProps({
   onDayMouseLeave: PropTypes.func,
   renderDay: PropTypes.func,
 
+  focusedDate: momentPropTypes.momentObj,
+
   // i18n
   monthFormat: PropTypes.string,
+  phrases: PropTypes.shape(getPhrasePropTypes(CalendarDayPhrases)),
 });
 
 const defaultProps = {
@@ -48,8 +55,11 @@ const defaultProps = {
   onDayMouseLeave() {},
   renderDay: null,
 
+  focusedDate: null,
+
   // i18n
   monthFormat: 'MMMM YYYY', // english locale
+  phrases: CalendarDayPhrases,
 };
 
 export default class CalendarMonth extends React.Component {
@@ -85,6 +95,8 @@ export default class CalendarMonth extends React.Component {
       onDayMouseLeave,
       renderDay,
       daySize,
+      focusedDate,
+      phrases,
     } = this.props;
 
     const { weeks } = this.state;
@@ -111,12 +123,14 @@ export default class CalendarMonth extends React.Component {
                     day={day}
                     daySize={daySize}
                     isOutsideDay={!day || day.month() !== month.month()}
+                    isFocused={isVisible && isSameDay(day, focusedDate)}
                     modifiers={modifiers}
                     key={dayOfWeek}
                     onDayMouseEnter={onDayMouseEnter}
                     onDayMouseLeave={onDayMouseLeave}
                     onDayClick={onDayClick}
                     renderDay={renderDay}
+                    phrases={phrases}
                   />
                 ))}
               </tr>
